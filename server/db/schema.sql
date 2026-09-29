@@ -1,0 +1,4 @@
+-- Canonical PostgreSQL schema is applied as the versioned migration:
+-- server/db/migrations/001_initial_schema.sql
+-- Run `npm run db:migrate`; that DDL preserves Lexora's text IDs and legacy
+-- payloads while providing relational constraints, indexes, and safe defaults.

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="View LEXORA orders and shipment updates." />
+  <title>My Orders | LEXORA</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="orders.css" />
+</head>
+<body class="orders-page">
+  <div class="announce"><span>GLOBAL TRADE, REFINED</span><span>Worldwide delivery · Curated suppliers · Built for scale</span></div>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="LEXORA home"><span class="brand-mark">L</span><span>LEXORA</span></a>
+    <nav class="desktop-nav" aria-label="Primary navigation"><a href="shop.html">Shop</a><a href="index.html#suppliers">Suppliers</a><a href="index.html#wholesale">Wholesale</a></nav>
+    <div class="header-actions"><a class="text-button orders-addresses-link" href="#customerProfile">Profile</a><a class="wishlist-nav orders-wishlist-link" href="wishlist.html" aria-label="Wishlist"><span aria-hidden="true">♡</span> Wishlist <span class="wishlist-count" id="wishlistCount">0</span></a><a class="text-button orders-addresses-link" href="addresses.html">My Addresses</a><a class="text-button orders-home-link" href="index.html">Continue shopping ↗</a></div>
+  </header>
+
+  <main class="orders-main">
+    <div class="orders-heading"><p class="eyebrow">YOUR LEXORA ACCOUNT</p><h1>My orders<span>.</span></h1><p>Order details and shipment updates, all in one place.</p></div>
+    <p id="ordersMessage" class="orders-message" role="status" aria-live="polite">Loading your account…</p>
+
+    <section id="ordersAuth" class="orders-auth" hidden>
+      <div class="auth-copy"><p class="eyebrow">CUSTOMER SIGN IN</p><h2>Welcome<br /><em>back.</em></h2><p>Sign in to see orders associated with your LEXORA account.</p><a href="register.html">Create a customer account ↗</a></div>
+      <form id="ordersLoginForm" class="orders-login">
+        <label for="ordersEmail">Email address</label><input id="ordersEmail" name="email" type="email" autocomplete="username" required />
+        <label for="ordersPassword">Password</label><input id="ordersPassword" name="password" type="password" autocomplete="current-password" required />
+        <button class="button button-dark" type="submit">Sign in <span>↗</span></button>
+        <p id="loginMessage" class="login-message" role="status"></p>
+      </form>
+    </section>
+
+    <section id="ordersContent" hidden>
+      <nav class="account-nav" aria-label="Customer account"><a href="#customerProfile">Profile</a><a href="#ordersListView">My Orders</a><a href="addresses.html">My Addresses</a><a href="wishlist.html">Wishlist</a></nav>
+      <div class="orders-toolbar"><p id="customerGreeting"></p><button id="signOutButton" class="text-button" type="button">Sign out</button></div>
+      <section id="customerProfile" class="account-profile" aria-labelledby="customerProfileTitle"><p class="eyebrow">CUSTOMER PROFILE</p><h2 id="customerProfileTitle">Profile</h2><dl><div><dt>Name</dt><dd id="customerProfileName"></dd></div><div><dt>Email</dt><dd id="customerProfileEmail"></dd></div></dl></section>
+      <section id="ordersListView" aria-label="Your orders">
+        <div id="ordersList" class="orders-list"></div>
+      </section>
+      <section id="orderDetailView" class="order-detail" aria-label="Order tracking details" hidden>
+        <button id="backToOrders" class="back-link" type="button"><span aria-hidden="true">←</span> All orders</button>
+        <div id="orderDetail"></div>
+      </section>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-bottom"><span>© 2026 LEXORA GLOBAL, INC.</span><span>Discover. Connect. Trade.</span><span>London · Dubai · Singapore</span></div></footer>
+  <script src="customer-session.js?v=auth-isolation-20260927-r3"></script>
+  <script src="customer-wishlist.js?v=wishlist-20260927-r2"></script>
+  <script src="order-tracking.js?v=auth-isolation-20260927-r3"></script>
+  <script src="orders.js?v=wishlist-20260927-r1"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+node_modules/
+data/dev.json
+uploads/products/*
+!uploads/products/.gitkeep
+*.backup-*
+.DS_Store

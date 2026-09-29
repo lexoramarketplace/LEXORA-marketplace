@@ -1,0 +1,26 @@
+{
+  "name": "lexora-marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LEXORA global marketplace API and frontend prototype",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test",
+    "db:migrate": "node server/db/migrate.js",
+    "db:import-json": "node server/db/import-json.js",
+    "db:health": "node -e \"const { pingDatabase } = require('./server/db/postgres'); pingDatabase().then((result) => { console.log(JSON.stringify(result, null, 2)); }).catch((error) => { console.error(error.message); process.exit(1); });\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1142.0",
+    "dotenv": "^18.0.0",
+    "pg": "^8.23.0",
+    "resend": "^4.5.0",
+    "sharp": "^0.35.5",
+    "stripe": "^22.6.2"
+  }
+}

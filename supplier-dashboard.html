@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supplier Dashboard | LEXORA</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: #f5f3ee; color: #141414; }
+    .supplier-shell { max-width: 1280px; margin: 32px auto; padding: 0 20px 72px; }
+    .supplier-topbar { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 24px; }
+    .supplier-topbar .brand { color: #111; }
+    .topbar-actions { display: flex; align-items: center; gap: 12px; }
+    .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: rgba(17,17,17,.06); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .status-pill.good { background: rgba(27,117,75,.08); color: #1b754b; }
+    .status-pill.warn { background: rgba(165,106,31,.08); color: #8d5d12; }
+    .status-pill.neutral { background: rgba(17,17,17,.08); color: #3a3a3a; }
+    .supplier-panel { background: #fff; border: 1px solid rgba(17,17,17,.1); padding: 24px; }
+    .auth-card { display: grid; grid-template-columns: 1.3fr .7fr; gap: 32px; align-items: stretch; }
+    .auth-card[hidden] { display: none; }
+    .auth-card .panel-copy { background: linear-gradient(135deg, #111, #2d2d2d); color: #fff; padding: 28px; min-height: 280px; }
+    .auth-card form { padding: 24px 0; }
+    .auth-card label { display: block; margin: 0 0 12px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #4b4b4b; }
+    .auth-card input { width: 100%; padding: 14px 16px; border: 1px solid rgba(17,17,17,.18); margin-bottom: 16px; font: inherit; }
+    .auth-card button { width: 100%; }
+    .form-status { min-height: 24px; font-size: 14px; padding-top: 4px; color: #5d5d5d; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-bottom: 24px; }
+    .metric-card { background: #fff; border: 1px solid rgba(17,17,17,.1); padding: 18px 20px; }
+    .metric-card .label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: #666; margin-bottom: 10px; }
+    .metric-card strong { font-size: clamp(28px, 4vw, 38px); font-family: var(--serif, Georgia, serif); }
+    .supplier-grid { display: grid; grid-template-columns: 1.45fr .85fr; gap: 24px; }
+    .content-panel { background: #fff; border: 1px solid rgba(17,17,17,.1); padding: 24px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid rgba(17,17,17,.08); vertical-align: top; }
+    th { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: #666; }
+    .product-form { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px 18px; }
+    .product-form label { display: flex; flex-direction: column; gap: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #4b4b4b; }
+    .product-form input, .product-form select, .product-form textarea { width: 100%; border: 1px solid rgba(17,17,17,.18); padding: 12px 14px; font: inherit; }
+    .product-form textarea { min-height: 120px; resize: vertical; }
+    .product-form .full { grid-column: 1 / -1; }
+    .actions-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .link-button { appearance: none; background: transparent; color: #111; border: 1px solid rgba(17,17,17,.18); padding: 10px 14px; text-decoration: none; display: inline-block; }
+    .muted { color: #666; }
+    .empty-state { padding: 22px 12px; color: #585858; }
+    @media (max-width: 940px) {
+      .auth-card, .supplier-grid, .summary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="supplier-shell">
+    <header class="supplier-topbar">
+      <a class="brand" href="index.html" aria-label="LEXORA home"><span class="brand-mark">L</span><span>LEXORA</span></a>
+      <div class="topbar-actions">
+        <span id="storeStatus" class="status-pill neutral">Supplier access</span>
+        <a id="storeSettingsLink" class="link-button" href="supplier-settings.html" hidden>Store settings</a>
+        <button id="signOutButton" class="text-button" type="button" hidden>Sign out</button>
+      </div>
+    </header>
+
+    <section id="authView" class="supplier-panel auth-card">
+      <div class="panel-copy">
+        <p class="eyebrow">SUPPLIER ACCESS</p>
+        <h1>Run your storefront from one place.</h1>
+        <p>Manage products, track orders, and keep your supplier profile aligned with the marketplace.</p>
+      </div>
+      <div>
+        <h2>Sign in</h2>
+        <form id="supplierLoginForm">
+          <label>Email<input id="supplierEmail" type="email" autocomplete="username" required /></label>
+          <label>Password<input id="supplierPassword" type="password" autocomplete="current-password" required /></label>
+          <button class="button button-dark" type="submit">Open supplier dashboard <span>↗</span></button>
+          <p id="loginStatus" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+        <p class="muted" style="margin-top:14px;">Need an account? <a href="register.html">Create a supplier profile ↗</a></p>
+      </div>
+    </section>
+
+    <section id="dashboardView" hidden>
+      <div class="summary-grid" id="supplierSummary"></div>
+      <div class="supplier-grid">
+        <section class="content-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+            <div>
+              <p class="eyebrow">YOUR CATALOGUE</p>
+              <h2 id="storeName">Supplier catalogue</h2>
+            </div>
+            <div class="actions-row">
+              <button id="addProductButton" class="button button-dark" type="button">＋ Add product</button>
+              <a id="storefrontLink" class="link-button" href="#" target="_blank" rel="noopener">View storefront ↗</a>
+            </div>
+          </div>
+          <div id="productsTableWrap"></div>
+        </section>
+
+        <aside class="content-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+            <div>
+              <p class="eyebrow">STORE STATUS</p>
+              <h3 id="verificationLabel">Pending</h3>
+            </div>
+            <span id="verificationBadge" class="status-pill neutral">Pending</span>
+          </div>
+          <p id="supplierProfile" class="muted"></p>
+          <div style="margin-top:22px;">
+            <p class="eyebrow">RECENT ORDERS</p>
+            <div id="recentOrders"></div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="supplier-panel" style="margin-top:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+          <div>
+            <p class="eyebrow">PRODUCT EDITOR</p>
+            <h2 id="productEditorTitle">Add a product</h2>
+          </div>
+        </div>
+        <form id="supplierProductForm" class="product-form">
+          <input type="hidden" id="productId" />
+          <label>Product name<input id="productName" name="name" required /></label>
+          <label>Category<input id="productCategory" name="category" required /></label>
+          <label>Supplier name<input id="productSupplier" name="supplier" required /></label>
+          <label>Location<input id="productLocation" name="location" required /></label>
+          <label>Price<input id="productPrice" name="price" type="number" min="0" step="0.01" required /></label>
+          <label>Wholesale price<input id="productWholesalePrice" name="wholesalePrice" type="number" min="0" step="0.01" /></label>
+          <label>MOQ<input id="productMoq" name="moq" type="number" min="1" step="1" required /></label>
+          <label>Stock<input id="productStock" name="stock" type="number" min="0" step="1" required /></label>
+          <label>Status<select id="productStatus" name="status"><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
+          <label class="full">Description<textarea id="productDescription" name="description" required></textarea></label>
+          <div class="full actions-row">
+            <button class="button button-dark" type="submit" id="saveProductButton">Save product</button>
+            <button class="button button-light" type="button" id="cancelEditButton">Cancel</button>
+            <span id="productFormMessage" class="muted" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+    </section>
+  </div>
+
+  <script src="supplier-session.js"></script>
+  <script src="supplier.js?v=supplier-profile-20260927-r1"></script>
+</body>
+</html>

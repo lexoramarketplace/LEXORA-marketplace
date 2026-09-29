@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Find similar products in the LEXORA catalog using an image." />
+  <title>Visual Search | LEXORA</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="shop.css?v=visual-search-20260927-r2" />
+  <link rel="stylesheet" href="visual-search.css?v=visual-search-20260927-r2" />
+</head>
+<body>
+  <div class="announce"><span>GLOBAL TRADE, REFINED</span><span>Worldwide delivery · Curated suppliers · Built for scale</span></div>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="LEXORA home"><span class="brand-mark">L</span><span>LEXORA</span></a>
+    <nav class="desktop-nav" aria-label="Primary navigation"><a href="shop.html">Shop</a><a href="index.html#suppliers">Suppliers</a><a href="index.html#wholesale">Wholesale</a></nav>
+    <div class="header-actions">
+      <a class="wishlist-nav" href="wishlist.html" aria-label="Wishlist"><span aria-hidden="true">♡</span> Wishlist <span class="wishlist-count" id="wishlistCount">0</span></a>
+      <a class="text-button" href="cart.html">Cart ↗</a>
+    </div>
+  </header>
+
+  <main class="visual-search-page">
+    <section class="visual-search-intro">
+      <p class="eyebrow">LEXORA IMAGE SEARCH</p>
+      <h1>Find it by <em>looking.</em></h1>
+      <p>Upload a product image and discover similar items from the live LEXORA catalog.</p>
+    </section>
+
+    <section class="visual-search-workspace" aria-labelledby="uploadHeading">
+      <div class="visual-search-main">
+        <h2 id="uploadHeading">Visual search</h2>
+        <p class="visual-search-subtitle">Find products by taking a photo or uploading an image.</p>
+
+        <div class="visual-search-chooser" aria-label="Visual search source selection">
+          <button id="cameraScanButton" class="button button-dark visual-choice-button" type="button" aria-label="Scan with camera for visual search">
+            <span aria-hidden="true">📷</span> Scan with Camera
+          </button>
+          <div class="visual-choice-divider" aria-hidden="true">OR</div>
+          <button id="uploadTriggerButton" class="button button-light visual-choice-button" type="button" aria-label="Upload an image for visual search">
+            <span aria-hidden="true">🖼</span> Upload Image
+          </button>
+        </div>
+
+        <label id="uploadDropzone" class="visual-upload-dropzone" for="visualImageInput" tabindex="0" aria-label="Upload a product image">
+          <span class="camera-icon" aria-hidden="true"><span></span></span>
+          <strong>Upload product image</strong>
+          <span>JPG, PNG, or WEBP · up to 5 MB</span>
+          <input id="visualImageInput" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" capture="environment" />
+        </label>
+
+        <section id="cameraScanner" class="camera-scanner" hidden aria-live="polite" aria-label="Camera scanner for visual search">
+          <div class="camera-scanner-panel">
+            <div class="camera-scanner-header">
+              <p class="eyebrow">LIVE CAMERA</p>
+              <button id="closeCameraButton" class="text-button" type="button" aria-label="Close the camera scanner">Close</button>
+            </div>
+            <div class="camera-viewer">
+              <video id="cameraVideo" playsinline muted autoplay aria-label="Camera preview"></video>
+              <div class="camera-frame" aria-hidden="true"></div>
+              <div id="cameraPermissionMessage" class="camera-permission-message" hidden>
+                <p>Camera access is unavailable. You can upload an image instead.</p>
+                <button id="cameraUploadFallbackButton" class="button button-dark" type="button">Upload Image</button>
+              </div>
+              <div id="cameraCapturePreview" class="camera-capture-preview" hidden>
+                <img id="cameraCapturedImage" alt="Captured product preview" />
+              </div>
+            </div>
+            <p class="camera-instruction">Point your camera at a product</p>
+            <div class="camera-action-row">
+              <button id="capturePhotoButton" class="button button-dark" type="button" aria-label="Capture product image">Capture</button>
+              <div id="cameraPostCaptureActions" class="camera-post-capture-actions" hidden>
+                <button id="retakeCameraButton" class="button button-light" type="button" aria-label="Retake the camera photo">Retake</button>
+                <button id="useCameraPhotoButton" class="button button-dark" type="button" aria-label="Use captured photo for visual search">Use Photo</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="selectedImagePanel" class="selected-image-panel" hidden aria-label="Selected image preview">
+          <div class="selected-image-frame"><img id="selectedImagePreview" alt="Selected product image preview" /></div>
+          <div class="selected-image-details">
+            <div><strong id="selectedImageName"></strong><span id="selectedImageMetadata"></span></div>
+            <div class="selected-image-actions">
+              <label class="button button-light image-change-button" for="visualImageInput">Change image</label>
+              <button id="removeImageButton" class="text-button" type="button">Remove</button>
+            </div>
+          </div>
+        </section>
+
+        <p id="visualPrivacyNote" class="visual-privacy-note">Your photo is used only to find similar products on LEXORA.</p>
+        <p id="visualSearchStatus" class="visual-search-status" role="status" aria-live="polite"></p>
+        <button id="findSimilarButton" class="button button-dark visual-submit" type="button" disabled>Find Similar Products <span>↗</span></button>
+      </div>
+
+      <aside class="visual-search-aside">
+        <p class="eyebrow">MATCHING METHOD</p>
+        <p id="providerDescription">Checking available visual-search analysis…</p>
+        <div class="visual-match-legend"><span class="match-dot"></span><span>Results are ranked only when stored catalog data supports a match.</span></div>
+      </aside>
+    </section>
+
+    <section id="visualResultsSection" class="visual-results-section" hidden aria-live="polite">
+      <div class="visual-results-heading">
+        <div>
+          <p class="eyebrow">LIVE LEXORA CATALOG</p>
+          <h2>Visual Search Results</h2>
+          <p id="visualResultsSummary"></p>
+        </div>
+        <span id="visualMatchMethod" class="visual-mode-label"></span>
+      </div>
+      <div id="detectedAttributes" class="detected-attributes"></div>
+      <div class="visual-results-layout">
+        <aside class="visual-result-filters">
+          <p class="filter-title">Refine matches</p>
+          <label>Category<select id="visualCategoryFilter"><option value="all">All categories</option></select></label>
+          <label>Color<select id="visualColorFilter"><option value="all">All colors</option></select></label>
+          <label>Supplier<select id="visualSupplierFilter"><option value="all">All suppliers</option></select></label>
+          <label>Product type<select id="visualTypeFilter"><option value="all">All types</option></select></label>
+          <label id="visualMaterialFilterRow" hidden>Material<select id="visualMaterialFilter"><option value="all">All materials</option></select></label>
+          <label>Maximum price<input id="visualMaxPrice" type="number" min="0" step="1" placeholder="Any price" /></label>
+          <label>Minimum rating<select id="visualRatingFilter"><option value="0">Any rating</option><option value="4">4+ stars</option><option value="3">3+ stars</option></select></label>
+          <label class="check-label"><input id="visualAvailableOnly" type="checkbox" /> Available now</label>
+          <button id="clearVisualFilters" class="clear-filters" type="button">Clear filters</button>
+        </aside>
+        <div class="visual-results-content">
+          <div class="results-meta"><span id="visualResultCount"></span><span id="visualResultNotice" class="muted"></span></div>
+          <div id="visualResultsGrid" class="shop-grid visual-results-grid"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="visualSearchToast" class="visual-search-toast" role="status" aria-live="polite"></div>
+  <footer class="site-footer"><div class="footer-bottom"><span>© 2026 LEXORA GLOBAL, INC.</span><span>Discover. Connect. Trade.</span><span><a href="shop.html">Return to shop ↗</a></span></div></footer>
+  <script src="customer-session.js?v=auth-isolation-20260927-r3"></script>
+  <script src="customer-wishlist.js?v=wishlist-20260927-r2"></script>
+  <script src="rating-display.js?v=reviews-20260927-r1"></script>
+  <script src="visual-search.js?v=visual-search-20260927-r2"></script>
+</body>
+</html>

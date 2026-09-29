@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LEXORA is a global marketplace connecting discerning buyers with trusted suppliers worldwide." />
+  <title>LEXORA | Discover. Connect. Trade.</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="visual-search.css?v=visual-search-20260927-r2" />
+  <link rel="stylesheet" href="enhancements.css?v=customer-account-20260927-r2" />
+  <link rel="stylesheet" href="wishlist.css?v=wishlist-20260927-r1" />
+</head>
+<body>
+  <div class="announce"><span>GLOBAL TRADE, REFINED</span><span>Worldwide delivery · Curated suppliers · Built for scale</span></div>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="LEXORA home"><span class="brand-mark">L</span><span>LEXORA</span></a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="shop.html">Shop</a><a href="#suppliers">Suppliers</a><a href="#wholesale">Wholesale</a><a href="supplier-dashboard.html">Supplier Portal</a><a href="#journal">Journal</a>
+    </nav>
+    <div class="header-actions">
+      <label class="currency-select"><span class="sr-only">Currency</span><select id="currency"><option value="USD">USD</option><option value="EUR">EUR</option><option value="AED">AED</option><option value="GBP">GBP</option></select></label>
+      <a class="wishlist-nav" href="wishlist.html" aria-label="Wishlist"><span aria-hidden="true">♡</span> Wishlist <span class="wishlist-count" id="wishlistCount">0</span></a>
+      <a class="icon-button account-button" id="accountButton" href="orders.html" aria-label="Customer Account" title="Customer Account"><span aria-hidden="true">◎</span><span class="account-label">Customer Account</span></a>
+      <button class="icon-button cart-trigger" id="cartButton" aria-label="Open cart">⌂<span class="cart-count" id="cartCount">0</span></button>
+      <button class="menu-button" id="menuButton" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">THE GLOBAL MARKETPLACE</p>
+        <h1>Objects with<br /><em>purpose.</em></h1>
+        <p class="hero-text">Discover exceptional products and trusted suppliers from every corner of the world. One considered place for the way commerce should feel.</p>
+        <div class="hero-actions"><a class="button button-dark" href="#shop">Explore the edit <span>↗</span></a><button class="text-button" id="supplierCta" type="button">Supplier dashboard <span>↗</span></button></div>
+      </div>
+      <div class="hero-art" aria-label="Editorial image of an international luxury marketplace" role="img">
+        <div class="hero-stamp"><span>LEXORA</span><b>GLOBAL<br />COMMERCE</b><span>EST. 2026</span></div>
+        <div class="hero-product-note"><span class="line"></span><span>THE NEW<br />ESSENTIALS</span></div>
+      </div>
+      <div class="hero-bottom"><span>01 / 04</span><div class="hero-progress"><span></span></div><span>Scroll to discover</span></div>
+    </section>
+
+    <section class="signal-strip"><div><strong>48K+</strong><span>verified suppliers</span></div><div><strong>120</strong><span>markets connected</span></div><div><strong>24/7</strong><span>trade support</span></div><div><strong>98.4%</strong><span>on-time dispatch</span></div></section>
+
+    <section class="section category-section" id="shop">
+      <div class="section-heading"><div><p class="eyebrow">BROWSE THE WORLD</p><h2>Find your next<br /><em>essential.</em></h2></div><p class="section-intro">A considered selection of products for retail, trade, and everything in between.</p></div>
+      <p class="api-state" id="categoriesState" role="status">Loading categories...</p><div class="category-grid" id="categoryGrid"></div>
+    </section>
+
+    <section class="section product-section" id="featured">
+      <div class="section-heading compact"><div><p class="eyebrow">THE LEXORA EDIT</p><h2>In demand, <em>worldwide.</em></h2></div><div class="view-controls"><button class="filter-button active" data-filter="All">All products</button><button class="filter-button" data-filter="New">New arrivals</button><button class="filter-button" data-filter="Wholesale">Wholesale ready</button></div></div>
+      <div class="search-row"><div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products, suppliers, categories..." /><kbd>⌘ K</kbd></div><a class="visual-search-entry" href="visual-search.html?v=visual-search-20260927-r2"><span class="visual-camera-mark" aria-hidden="true"></span>Search by image</a><button class="filter-toggle" id="filterToggle">Filters <span>＋</span></button><select class="sort-select" id="sortSelect"><option value="featured">Sort: Featured</option><option value="price-low">Price: Low to high</option><option value="price-high">Price: High to low</option><option value="rating">Highest rated</option></select></div>
+      <div class="marketplace-layout"><aside class="filter-panel" id="filterPanel"><p class="filter-title">Refine selection</p><label>Supplier location<select id="locationFilter"><option value="all">Anywhere</option><option value="Italy">Italy</option><option value="Japan">Japan</option><option value="Denmark">Denmark</option><option value="Morocco">Morocco</option><option value="United Kingdom">United Kingdom</option></select></label><label>Price range<select id="priceFilter"><option value="all">All prices</option><option value="under-100">Under $100</option><option value="100-500">$100 – $500</option><option value="over-500">Over $500</option></select></label><label class="check-label"><input type="checkbox" id="verifiedFilter" /> Verified suppliers only</label><label class="check-label"><input type="checkbox" id="wholesaleFilter" /> Wholesale pricing</label><button class="clear-filters" id="clearFilters">Clear filters</button></aside><div class="products-wrap"><div class="listing-meta"><span id="resultsCount">Loading products...</span><span id="productsState" class="api-state" role="status">Loading products...</span><span class="demo-label">LIVE + DEMO CATALOGUE</span></div><div class="product-grid" id="productGrid"></div></div></div>
+    </section>
+
+    <section class="section wholesale-section" id="wholesale"><div class="section-heading compact"><div><p class="eyebrow">TRADE AT SCALE</p><h2>Better terms for<br /><em>bigger ideas.</em></h2></div><p class="section-intro">Wholesale-ready goods with transparent minimums and supplier terms built for your next order.</p></div><div class="wholesale-grid" id="wholesaleGrid"></div></section>
+
+    <section class="section supplier-section" id="suppliers"><div class="section-heading compact"><div><p class="eyebrow">MEET THE MAKERS</p><h2>Trusted from<br /><em>source.</em></h2></div><a class="text-button" href="#supplierCta">View all suppliers ↗</a></div><p class="api-state" id="suppliersState" role="status">Loading suppliers...</p><div class="supplier-grid" id="supplierGrid"></div></section>
+
+    <section class="supplier-banner"><div class="supplier-image"></div><div class="supplier-copy"><p class="eyebrow">FOR THE MAKERS</p><h2>Your craft.<br /><em>Our world.</em></h2><p>LEXORA gives ambitious suppliers the infrastructure, visibility, and relationships to move their business forward.</p><button class="button button-light" id="supplierBannerCta" type="button">Open supplier workspace <span>↗</span></button><div class="supplier-stats"><span><strong>12M+</strong> monthly buyers</span><span><strong>180+</strong> trade categories</span></div></div></section>
+
+    <section class="section trust-section"><div class="section-heading compact"><div><p class="eyebrow">TRADE WITH CONFIDENCE</p><h2>Commerce, with<br /><em>clarity.</em></h2></div><p class="section-intro">Every detail is designed to make global trade more transparent, from first conversation to final delivery.</p></div><div class="trust-grid"><article><span class="trust-number">01</span><h3>Verified partners</h3><p>Work with businesses whose identity, capabilities, and documentation have been reviewed.</p><a href="#suppliers">Meet our suppliers ↗</a></article><article><span class="trust-number">02</span><h3>Built for volume</h3><p>Move seamlessly from one considered purchase to your next large-scale order.</p><a href="#featured">Browse wholesale ↗</a></article><article><span class="trust-number">03</span><h3>Human support</h3><p>Our trade specialists help you navigate products, shipping, and supplier conversations.</p><a href="#journal">Visit the journal ↗</a></article></div></section>
+
+    <section class="newsletter" id="journal"><p class="eyebrow">THE LEXORA JOURNAL</p><h2>Good things,<br /><em>well sourced.</em></h2><p>New arrivals, supplier stories, and a sharper view of global commerce. Delivered occasionally.</p><div class="newsletter-form"><input id="emailInput" type="email" placeholder="Your email address" /><button id="subscribeButton">Subscribe <span>↗</span></button></div><small id="subscribeNote"></small></section>
+  </main>
+  <footer class="site-footer"><div class="footer-main"><a class="brand brand-footer" href="#top"><span class="brand-mark">L</span><span>LEXORA</span></a><p>Discover. Connect. Trade.<br />A global marketplace for better commerce.</p><div class="footer-links"><div><b>Explore</b><a href="#shop">Shop all</a><a href="#featured">New arrivals</a><a href="#wholesale">Wholesale</a></div><div><b>Sell with us</b><a href="#suppliers">Become a supplier</a><a href="#suppliers">Supplier centre</a><a href="#suppliers">Verification</a></div><div><b>Support</b><a href="#journal">Help centre</a><a href="#journal">Shipping & returns</a><a href="#journal">Contact us</a></div></div></div><div class="footer-bottom"><span>© 2026 LEXORA GLOBAL, INC.</span><span>Privacy · Terms · Cookies</span><span>London · Dubai · Singapore</span></div></footer>
+
+  <div class="modal-backdrop" id="modalBackdrop"><section class="modal" id="productModal" aria-modal="true" role="dialog"></section></div>
+  <aside class="cart-drawer" id="cartDrawer"><div class="drawer-header"><div><p class="eyebrow">YOUR SELECTION</p><h2>Shopping bag</h2></div><button class="close-button" id="closeCart">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-summary"><div><span>Subtotal</span><strong id="cartSubtotal">$0</strong></div><p>Shipping and duties calculated at checkout.</p><button class="button button-dark full-width" id="checkoutButton">Proceed to checkout <span>↗</span></button></div></aside>
+  <div class="toast" id="toast"></div>
+  <script src="customer-session.js?v=auth-isolation-20260927-r3"></script>
+  <script src="customer-wishlist.js?v=wishlist-20260927-r2"></script>
+  <script src="rating-display.js?v=reviews-20260927-r1"></script>
+  <script src="app.js?v=wishlist-20260927-r4"></script>
+  <script src="listing-fixes.js"></script>
+  <script src="api-hydration.js?v=reviews-20260927-r1"></script>
+  <script src="cart-sync.js"></script>
+</body>
+</html>

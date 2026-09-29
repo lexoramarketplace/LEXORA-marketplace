@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Manage shipping addresses for your LEXORA account." />
+  <title>My Addresses | LEXORA</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="orders.css" />
+  <link rel="stylesheet" href="addresses.css?v=addresses-20260927-r1" />
+</head>
+<body class="orders-page addresses-page">
+  <div class="announce"><span>GLOBAL TRADE, REFINED</span><span>Worldwide delivery · Curated suppliers · Built for scale</span></div>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="LEXORA home"><span class="brand-mark">L</span><span>LEXORA</span></a>
+    <nav class="desktop-nav" aria-label="Primary navigation"><a href="shop.html">Shop</a><a href="index.html#suppliers">Suppliers</a><a href="index.html#wholesale">Wholesale</a></nav>
+    <div class="header-actions"><a class="text-button" href="orders.html#customerProfile">Profile</a><a class="wishlist-nav" href="wishlist.html" aria-label="Wishlist"><span aria-hidden="true">♡</span> Wishlist <span class="wishlist-count" id="wishlistCount">0</span></a><a class="text-button" href="orders.html">My Orders</a><a class="text-button" href="index.html">Continue shopping ↗</a></div>
+  </header>
+  <main class="orders-main addresses-main">
+    <div class="orders-heading"><p class="eyebrow">YOUR LEXORA ACCOUNT</p><h1>My addresses<span>.</span></h1><p>Manage the delivery details saved to your account.</p></div>
+    <p id="addressesMessage" class="orders-message" role="status" aria-live="polite">Loading your addresses…</p>
+    <div class="addresses-toolbar"><h2>Saved addresses</h2><button class="button button-dark" id="addAddressButton" type="button">＋ Add address</button></div>
+    <div id="addressesList" class="addresses-list" aria-live="polite"></div>
+    <section id="addressAuth" class="address-auth" hidden><p>Sign in to manage addresses saved to your customer account.</p><a class="button button-dark" href="orders.html">Customer sign in ↗</a></section>
+    <section id="addressEditor" class="address-editor" hidden aria-labelledby="addressEditorTitle">
+      <div class="address-editor-head"><div><p class="eyebrow">ADDRESS DETAILS</p><h2 id="addressEditorTitle">Add an address</h2></div><button class="text-button" id="cancelAddressButton" type="button">Cancel</button></div>
+      <form id="addressForm" class="address-form" novalidate>
+        <input id="addressId" type="hidden" />
+        <label>Label<input name="label" id="addressLabel" maxlength="60" placeholder="Home, Work, Office" /></label>
+        <label>Full name<input name="fullName" id="addressFullName" maxlength="120" autocomplete="name" required /></label>
+        <label>Phone number<input name="phone" id="addressPhone" type="tel" maxlength="32" autocomplete="tel" required /></label>
+        <label class="address-wide">Address line 1<input name="addressLine1" id="addressLine1" maxlength="160" autocomplete="address-line1" required /></label>
+        <label class="address-wide">Address line 2 <span>(optional)</span><input name="addressLine2" id="addressLine2" maxlength="160" autocomplete="address-line2" /></label>
+        <label>City<input name="city" id="addressCity" maxlength="100" autocomplete="address-level2" required /></label>
+        <label>State / Province / Region<input name="state" id="addressState" maxlength="100" autocomplete="address-level1" required /></label>
+        <label>Postal / ZIP code<input name="postalCode" id="addressPostalCode" maxlength="20" autocomplete="postal-code" required /></label>
+        <label>Country<input name="country" id="addressCountry" maxlength="80" autocomplete="country-name" required /></label>
+        <label class="address-default"><input id="addressDefault" type="checkbox" /> Make this my default shipping address</label>
+        <div class="address-form-actions"><p id="addressFormStatus" class="login-message" role="status" aria-live="polite"></p><button class="button button-dark" id="saveAddressButton" type="submit">Save address</button></div>
+      </form>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-bottom"><span>© 2026 LEXORA GLOBAL, INC.</span><span>Discover. Connect. Trade.</span><span>London · Dubai · Singapore</span></div></footer>
+  <script src="customer-session.js?v=auth-isolation-20260927-r3"></script>
+  <script src="customer-wishlist.js?v=wishlist-20260927-r2"></script>
+  <script src="addresses.js?v=addresses-20260927-r4"></script>
+</body>
+</html>

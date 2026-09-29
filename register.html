@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | LEXORA</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f5;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      padding: 45px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      letter-spacing: 5px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      margin-bottom: 35px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #111;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: #111;
+      color: white;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    .message {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .login-link a {
+      color: #111;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .password-note {
+      font-size: 12px;
+      color: #777;
+      margin-top: -12px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="register-container">
+
+    <div class="logo">LEXORA</div>
+    <div class="subtitle">Global Marketplace</div>
+
+    <h1>Create your account</h1>
+
+    <form id="registerForm">
+
+      <label for="name">Full name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Enter your full name"
+        required
+      >
+
+      <label for="email">Email address</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="you@example.com"
+        required
+      >
+
+      <label for="role">Account type</label>
+      <select id="role" name="role">
+        <option value="customer">Customer</option>
+        <option value="supplier">Supplier</option>
+      </select>
+
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Create a password"
+        required
+        minlength="12"
+      >
+
+      <div class="password-note">
+        Password must contain at least 12 characters.
+      </div>
+
+      <button type="submit">
+        Create Account
+      </button>
+
+      <div class="message" id="message"></div>
+
+    </form>
+
+    <div class="login-link">
+      Already have an account?
+      <a href="index.html">Sign in</a>
+    </div>
+
+  </div>
+
+  <script src="customer-session.js?v=auth-isolation-20260927-r3"></script>
+  <script>
+    const API_BASE = "http://localhost:4000";
+
+    const form = document.getElementById("registerForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      message.textContent = "Creating your account...";
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            role
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Registration failed.");
+        }
+
+        if (result.data && result.data.token) {
+          if (result.data.user.role === 'customer') window.LexoraCustomerSession.saveToken(localStorage, result.data.token);
+          else localStorage.setItem('lexora-token', result.data.token);
+        }
+
+        message.textContent = "Account created successfully!";
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
+
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    });
+  </script>
+
+</body>
+</html>

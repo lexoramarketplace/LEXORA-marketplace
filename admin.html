@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | LEXORA</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="admin.css?v=reviews-20260927-r2" />
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><a class="brand" href="index.html"><span class="brand-mark">L</span><span>LEXORA</span></a><button class="icon-button mobile-only" id="closeSidebar" aria-label="Close navigation">×</button></div>
+      <p class="workspace-label">Marketplace control</p>
+      <nav class="side-nav" aria-label="Admin navigation">
+        <button class="nav-item active" data-section="overview">◈ <span>Dashboard</span></button>
+        <button class="nav-item" data-section="products">□ <span>Products</span></button>
+        <button class="nav-item" data-section="orders">▤ <span>Orders</span></button>
+        <button class="nav-item" data-section="customers">◎ <span>Customers</span></button>
+        <button class="nav-item" data-section="suppliers">◇ <span>Suppliers</span></button>
+        <button class="nav-item" data-section="categories">⌘ <span>Categories</span></button>
+        <button class="nav-item" data-section="payments">$ <span>Payments</span></button>
+        <button class="nav-item" data-section="analytics">⌁ <span>Analytics</span></button>
+        <button class="nav-item" data-section="reviews">☆ <span>Reviews</span></button>
+        <button class="nav-item" data-section="messages">□ <span>Messages</span></button>
+        <button class="nav-item" data-section="reports">▥ <span>Reports</span></button>
+        <button class="nav-item" data-section="settings">⚙ <span>Settings</span></button>
+      </nav>
+      <div class="sidebar-foot"><a href="index.html">← Back to storefront</a><button id="logoutButton">Sign out</button></div>
+    </aside>
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
+
+    <main class="main-content">
+      <header class="topbar"><button class="icon-button mobile-only" id="openSidebar" aria-label="Open navigation">☰</button><div><p class="eyebrow">LEXORA / ADMIN</p><h1 id="pageTitle">Dashboard</h1></div><div class="topbar-actions"><span id="adminIdentity" class="identity"></span><div class="notification-menu"><button class="notification-button" id="notificationButton" aria-label="Notifications" aria-expanded="false">♢<span id="notificationBadge" class="notification-badge" hidden>0</span></button><div id="notificationPanel" class="notification-panel" hidden><div class="notification-panel-head"><strong>Notifications</strong><button class="text-action" id="markAllNotificationsRead" type="button">Mark all read</button></div><div id="notificationList" class="notification-list"><p class="empty-state">No notifications yet.</p></div></div></div><button class="avatar" id="identityButton" aria-label="Account">A</button></div></header>
+
+      <section id="authView" class="auth-view" hidden>
+        <div class="auth-card"><p class="eyebrow">Restricted workspace</p><h2>Admin access</h2><p id="authMessage">Sign in with an administrator account to manage the marketplace.</p><form id="loginForm"><label>Email<input type="email" id="loginEmail" autocomplete="username" required /></label><label>Password<input type="password" id="loginPassword" autocomplete="current-password" required /></label><button class="primary-button" type="submit">Sign in securely</button></form><p class="form-status" id="loginStatus" role="status"></p></div>
+      </section>
+
+      <section id="dashboardView" hidden>
+        <div id="section-overview" class="dashboard-section active-section">
+          <div class="section-intro"><div><p class="eyebrow">LIVE OPERATIONS</p><h2>Good morning, operator.</h2><p class="muted">A clear view of the marketplace as it exists right now.</p></div><button class="quiet-button" data-refresh>Refresh data ↻</button></div>
+          <div class="metric-grid" id="metricGrid"></div>
+          <div class="content-grid two-up"><article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">REVENUE</p><h3>Sales overview</h3></div><span class="data-badge">Verified data</span></div><div id="revenueChart" class="bar-chart empty-state">No paid orders yet</div></article><article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">FULFILMENT</p><h3>Orders by status</h3></div></div><div id="statusChart" class="status-chart empty-state">No orders yet</div></article></div>
+          <div class="content-grid two-up"><article class="panel"><div class="panel-head"><div><p class="eyebrow">PRODUCT MOMENTUM</p><h3>Top selling products</h3></div></div><div id="topProducts" class="rank-list empty-state">No paid order items yet</div></article><article class="panel"><div class="panel-head"><div><p class="eyebrow">SYSTEM COVERAGE</p><h3>Data availability</h3></div></div><div id="dataAvailability" class="availability-list"></div></article></div>
+        </div>
+
+        <div id="section-products" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">CATALOGUE</p><h2>Products</h2><p class="muted">Manage the live JSON catalogue without editing data files.</p></div><button class="primary-button" id="addProductButton">＋ Add product</button></div><div class="toolbar"><input id="productSearch" type="search" placeholder="Search products, suppliers, categories" /><button class="quiet-button" data-refresh>Refresh ↻</button></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Product</th><th>Category</th><th>Supplier</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody id="productsTable"></tbody></table></div></div></div>
+
+        <div id="section-orders" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">COMMERCE</p><h2>Orders</h2><p class="muted">Payment and fulfilment state from the runtime order store.</p></div><button class="quiet-button" data-refresh>Refresh ↻</button></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div></div>
+
+        <div id="section-customers" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">RELATIONSHIPS</p><h2>Customers</h2></div></div><div class="toolbar"><input id="customerSearch" type="search" placeholder="Search customers" /></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead><tbody id="customersTable"></tbody></table></div></div></div>
+
+        <div id="section-suppliers" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">SUPPLY NETWORK</p><h2>Suppliers</h2></div></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Business</th><th>Country</th><th>Products</th><th>Verification</th><th>Status</th></tr></thead><tbody id="suppliersTable"></tbody></table></div></div></div>
+
+        <div id="section-categories" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">TAXONOMY</p><h2>Categories</h2></div><form id="categoryForm" class="inline-form"><input id="categoryName" placeholder="New category name" required /><button class="primary-button" type="submit">Add</button></form></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Products</th><th>Type</th><th></th></tr></thead><tbody id="categoriesTable"></tbody></table></div></div></div>
+
+        <div id="section-payments" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">PAYMENT RECORDS</p><h2>Payments</h2><p class="muted">Only recorded payment data is shown. No fake transactions are generated.</p></div></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Order</th><th>Provider</th><th>Amount</th><th>Currency</th><th>Status</th><th>Date</th></tr></thead><tbody id="paymentsTable"></tbody></table></div></div></div>
+
+        <div id="section-analytics" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">MEASURE WHAT EXISTS</p><h2>Analytics</h2><p class="muted">Historical charts appear as paid orders accumulate.</p></div></div><div class="panel analytics-note"><strong>Real data only</strong><span id="analyticsSummary">No historical order data is available yet.</span></div><div class="content-grid two-up"><article class="panel chart-panel"><div class="panel-head"><h3>Revenue by month</h3></div><div id="analyticsRevenue" class="bar-chart empty-state">No data available yet</div></article><article class="panel chart-panel"><div class="panel-head"><h3>Orders by status</h3></div><div id="analyticsStatuses" class="status-chart empty-state">No data available yet</div></article></div></div>
+
+        <div id="section-reports" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">EXPORTS</p><h2>Reports</h2><p class="muted">Export the real records currently held by the runtime repository.</p></div></div><div class="report-grid"><button class="report-card" data-export="orders">↓ <strong>Orders CSV</strong><span>Export order records</span></button><button class="report-card" data-export="products">↓ <strong>Products CSV</strong><span>Export catalogue records</span></button><button class="report-card" data-export="customers">↓ <strong>Customers CSV</strong><span>Export non-sensitive customer fields</span></button></div></div>
+
+        <div id="section-reviews" class="dashboard-section"><div class="section-intro"><div><p class="eyebrow">CUSTOMER FEEDBACK</p><h2>Product reviews</h2><p class="muted">Approve reviews before publication, or hide and remove content that does not meet marketplace standards.</p></div></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Product</th><th>Customer</th><th>Rating</th><th>Review</th><th>Purchase</th><th>Moderation</th><th></th></tr></thead><tbody id="reviewsTable"></tbody></table></div><div class="review-admin-pagination"><button type="button" id="reviewPrevPage" class="quiet-button">Previous</button><span id="reviewPageStatus" class="subtle" aria-live="polite">Page 1</span><button type="button" id="reviewNextPage" class="quiet-button">Next</button></div></div></div>
+        <div id="section-messages" class="dashboard-section"><div class="empty-feature"><span class="feature-icon">□</span><p class="eyebrow">MESSAGES</p><h2>Not available in this runtime</h2><p>Conversation and message tables exist in the production schema but are not active in this demo repository.</p></div></div>
+        <div id="section-settings" class="dashboard-section"><div class="empty-feature"><span class="feature-icon">⚙</span><p class="eyebrow">SETTINGS</p><h2>Settings are intentionally limited</h2><p>Private environment values, Stripe secrets, session secrets, and database credentials are never exposed in this dashboard.</p></div></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="productDialog" class="product-dialog"><form method="dialog" id="productForm"><div class="dialog-head"><div><p class="eyebrow">CATALOGUE EDITOR</p><h2 id="productDialogTitle">Add product</h2></div><button class="icon-button" value="cancel" aria-label="Close">×</button></div><input type="hidden" id="productId" /><div class="form-grid"><label>Product name<input id="productName" required /></label><label>Category<input id="productCategory" required /></label><label>Supplier<input id="productSupplier" required /></label><label>Location<input id="productLocation" required /></label><label>Retail price<input id="productPrice" type="number" min="0" step="0.01" required /></label><label>Wholesale price<input id="productWholesalePrice" type="number" min="0" step="0.01" /></label><label>MOQ<input id="productMoq" type="number" min="0" step="1" value="1" /></label><label>Stock<input id="productStock" type="number" min="0" step="1" value="0" /></label><label>Low-stock threshold<input id="productLowStockThreshold" type="number" min="0" step="1" value="5" /></label><label>Image URL<input id="productImage" type="url" /></label><label>Status<select id="productStatus"><option value="active">Active</option><option value="inactive">Inactive</option><option value="draft">Draft</option></select></label><label class="wide">Description<textarea id="productDescription" rows="4"></textarea></label></div><section class="image-manager" aria-labelledby="imageManagerTitle"><div class="image-manager-head"><div><p class="eyebrow">PRODUCT IMAGES</p><h3 id="imageManagerTitle">Upload product images</h3><p>JPG, JPEG, PNG, or WEBP · 5 MB maximum per image</p></div><label class="upload-button">＋ Choose images<input id="productImages" type="file" accept="image/jpeg,image/png,image/webp" multiple /></label></div><div id="imageDropzone" class="image-dropzone" tabindex="0"><strong>Drop images here</strong><span>or choose files above. Select a thumbnail to make it primary.</span></div><div id="imagePreviewGrid" class="image-preview-grid"></div><p class="form-status" id="imageStatusMessage"></p></section><p class="form-status" id="productStatusMessage"></p><div class="dialog-actions"><button class="quiet-button" value="cancel">Cancel</button><button class="primary-button" id="saveProductButton" value="default">Save product</button></div></form></dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="admin-session.js?v=auth-split-20260927-r3"></script>
+  <script src="admin-api-errors.js?v=orders-fetch-20260927-r1"></script>
+  <script src="admin.js?v=reviews-20260927-r2"></script>
+</body>
+</html>

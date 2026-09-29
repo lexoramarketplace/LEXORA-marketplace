@@ -1,0 +1,59 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+
+const dataFile = process.env.LEXORA_DATA_FILE || path.join(process.cwd(), 'data', 'dev.json');
+const seed = {
+  users: [],
+  products: [
+    { id: 'prod_vela', name: 'Vela sculptural table lamp', category: 'Home & Furniture', price: 420, wholesalePrice: 280, moq: 10, supplier: 'Atelier Nera', location: 'Italy', verified: true, rating: 4.9, reviews: 38, stock: 120 },
+    { id: 'prod_kanso', name: 'Kanso travel case', category: 'Bags & Accessories', price: 185, wholesalePrice: 112, moq: 25, supplier: 'Kanso Works', location: 'Japan', verified: true, rating: 4.8, reviews: 64, stock: 220 },
+    { id: 'prod_forma', name: 'Forma lounge chair', category: 'Home & Furniture', price: 890, wholesalePrice: 590, moq: 5, supplier: 'Nord Form', location: 'Denmark', verified: true, rating: 4.7, reviews: 21, stock: 42 }
+  ],
+  suppliers: [],
+  orders: [],
+  rfqs: [],
+  sessions: []
+};
+
+function ensureStore() {
+  fs.mkdirSync(path.dirname(dataFile), { recursive: true });
+  if (!fs.existsSync(dataFile)) fs.writeFileSync(dataFile, JSON.stringify(seed, null, 2));
+}
+function readStore() { ensureStore(); return JSON.parse(fs.readFileSync(dataFile, 'utf8')); }
+function writeStore(store) { fs.writeFileSync(dataFile, JSON.stringify(store, null, 2)); }
+function id(prefix) { return `${prefix}_${crypto.randomUUID()}`; }
+function findUserByEmail(email) { return readStore().users.find(user => user.email === email.toLowerCase()); }
+function createUser(user) { const store = readStore(); const record = { id: id('usr'), createdAt: new Date().toISOString(), ...user }; store.users.push(record); writeStore(store); return record; }
+function createSession(session) { const store = readStore(); store.sessions.push(session); writeStore(store); return session; }
+function findSession(tokenHash) { return readStore().sessions.find(session => session.tokenHash === tokenHash && new Date(session.expiresAt) > new Date()); }
+function listProducts(filters = {}) {
+  return readStore().products.filter(product => {
+    const haystack = `${product.name} ${product.category} ${product.supplier} ${product.location}`.toLowerCase();
+    return (!filters.search || haystack.includes(filters.search.toLowerCase())) && (!filters.category || product.category === filters.category) && (!filters.location || product.location === filters.location) && (!filters.verified || product.verified === true);
+  });
+}
+function listCategories() {
+  const store = readStore();
+  const categories = new Map();
+  store.products.forEach(product => {
+    if (!categories.has(product.category)) categories.set(product.category, { id: `cat_${product.category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`, name: product.category, productCount: 0 });
+    categories.get(product.category).productCount += 1;
+  });
+  return [...categories.values()];
+}
+function listSuppliers() {
+  const store = readStore();
+  const suppliers = new Map(store.suppliers.map(supplier => [supplier.businessName, { ...supplier }]));
+  store.products.forEach(product => {
+    if (!suppliers.has(product.supplier)) suppliers.set(product.supplier, { id: `sup_demo_${product.supplier.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`, businessName: product.supplier, country: product.location, verificationStatus: product.verified ? 'verified' : 'unverified', productCount: 0, rating: product.rating });
+    suppliers.get(product.supplier).productCount += 1;
+  });
+  return [...suppliers.values()];
+}
+function getProduct(productId) { return readStore().products.find(product => product.id === productId); }
+function createOrder(order) { const store = readStore(); const record = { id: id('ord'), status: 'placed', createdAt: new Date().toISOString(), ...order }; store.orders.push(record); writeStore(store); return record; }
+function createRfq(rfq) { const store = readStore(); const record = { id: id('rfq'), status: 'open', createdAt: new Date().toISOString(), ...rfq }; store.rfqs.push(record); writeStore(store); return record; }
+function createSupplier(supplier) { const store = readStore(); const record = { id: id('sup'), status: 'pending_review', createdAt: new Date().toISOString(), ...supplier }; store.suppliers.push(record); writeStore(store); return record; }
+
+module.exports = { readStore, findUserByEmail, createUser, createSession, findSession, listProducts, listCategories, listSuppliers, getProduct, createOrder, createRfq, createSupplier };

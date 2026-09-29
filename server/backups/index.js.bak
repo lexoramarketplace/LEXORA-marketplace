@@ -1,0 +1,112 @@
+require("dotenv").config({ path: "./server/.env" });
+const Stripe = require("stripe");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);const http = require('node:http');
+const { URL } = require('node:url');
+const crypto = require('node:crypto');
+const { findUserByEmail, createUser, createSession, listProducts, listCategories, listSuppliers, getProduct, createOrder, createRfq, createSupplier } = require('./db/repository');
+const { hashPassword, verifyPassword, issueToken, requireRole } = require('./auth');
+
+const port = Number(process.env.PORT || 4000);
+const origin = process.env.LEXORA_ORIGIN || 'http://localhost:4173';
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const json = (value, status = 200) => ({ status, body: JSON.stringify(value) });
+function headers() { return { 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Headers': 'Content-Type, Authorization', 'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }; }
+function send(response, result) { response.writeHead(result.status, headers()); response.end(result.body); }
+function parseBody(request) { return new Promise((resolve, reject) => { let raw = ''; request.on('data', chunk => { raw += chunk; if (raw.length > 1024 * 1024) reject(new Error('Payload too large')); }); request.on('end', () => { try { resolve(raw ? JSON.parse(raw) : {}); } catch { reject(new Error('Invalid JSON')); } }); request.on('error', reject); }); }
+function required(body, fields) { return fields.filter(field => typeof body[field] !== 'string' || !body[field].trim()); }
+function safeUser(user) { return { id: user.id, email: user.email, name: user.name, role: user.role, createdAt: user.createdAt }; }
+async function route(request) {
+  const url = new URL(request.url, `http://${request.headers.host}`); const path = url.pathname; const method = request.method;
+  if (method === 'OPTIONS') return { status: 204, body: '' };
+  if (method === 'GET' && path === '/') return json({ name: 'LEXORA Marketplace API', message: 'Welcome to the LEXORA Marketplace API.', docs: '/api/health' });
+  if (method === 'GET' && path === '/health') return json({ ok: true, service: 'lexora-api', time: new Date().toISOString() });
+  if (method === 'GET' && path === '/api/health') return json({ ok: true, service: 'lexora-api', time: new Date().toISOString() });
+  if (method === 'GET' && path === '/api/products') return json({ data: listProducts({ search: url.searchParams.get('search'), category: url.searchParams.get('category'), location: url.searchParams.get('location'), verified: url.searchParams.get('verified') === 'true' }) });
+  if (method === 'GET' && path === '/api/categories') return json({ data: listCategories() });
+  if (method === 'GET' && path === '/api/suppliers') return json({ data: listSuppliers() });
+  if (method === 'GET' && path.startsWith('/api/products/')) { const product = getProduct(path.split('/').pop()); return product ? json({ data: product }) : json({ error: 'Product not found' }, 404); }
+  if (method === 'POST' && path === '/api/auth/register') { const body = await parseBody(request); const missing = required(body, ['email', 'password', 'name']); if (missing.length || !emailPattern.test(body.email) || body.password.length < 12) return json({ error: 'Name, valid email, and a password of at least 12 characters are required.' }, 422); if (findUserByEmail(body.email)) return json({ error: 'An account already exists for this email.' }, 409); const user = createUser({ email: body.email.toLowerCase(), name: body.name.trim(), role: body.role === 'supplier' ? 'supplier' : 'customer', passwordHash: hashPassword(body.password) }); return json({ data: { user: safeUser(user), token: issueToken(user) } }, 201); }
+  if (method === 'POST' && path === '/api/auth/login') { const body = await parseBody(request); const user = findUserByEmail(String(body.email || '')); if (!user || !body.password || !verifyPassword(body.password, user.passwordHash)) return json({ error: 'Invalid email or password.' }, 401); return json({ data: { user: safeUser(user), token: issueToken(user) } }); }
+  if (method === 'GET' && path === '/api/me') { const user = requireRole(request); return user ? json({ data: user }) : json({ error: 'Authentication required.' }, 401); }
+ 
+  if (method === 'POST' && path === '/api/checkout') {
+    const user = requireRole(request, ['customer', 'supplier', 'admin']);
+
+    if (!user) {
+      return json({ error: 'Authentication required.' }, 401);
+    }
+
+    const body = await parseBody(request);
+
+    if (!Array.isArray(body.items) || !body.items.length) {
+      return json({ error: 'Cart items are required.' }, 422);
+    }
+
+    const lineItems = [];
+
+    for (const item of body.items) {
+      const product = getProduct(item.productId);
+      const quantity = Number(item.quantity);
+
+      if (
+        !product ||
+        !Number.isInteger(quantity) ||
+        quantity < 1 ||
+        quantity > product.stock
+      ) {
+        return json({
+          error: 'Invalid product or quantity.'
+        }, 422);
+      }
+
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: product.name
+          },
+          unit_amount: Math.round(product.price * 100)
+        },
+        quantity
+      });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items: lineItems,
+      success_url: `${origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/checkout-cancelled`,
+      client_reference_id: user.sub,
+      metadata: {
+        userId: user.sub
+      }
+    });
+
+    return json({
+      data: {
+        checkoutUrl: session.url,
+        sessionId: session.id
+      }
+    }, 201);
+  }
+
+  if (method === 'POST' && path === '/api/orders') { const user = requireRole(request, ['customer', 'supplier', 'admin']); if (!user) return json({ error: 'Authentication required.' }, 401); const body = await parseBody(request); if (!Array.isArray(body.items) || !body.items.length || !body.shippingAddress) return json({ error: 'Order items and shipping address are required.' }, 422); return json({ data: createOrder({ buyerId: user.sub, items: body.items, shippingAddress: body.shippingAddress, currency: body.currency || 'USD', paymentStatus: 'pending' }) }, 201); }
+  if (method === 'POST' && path === '/api/rfqs') { const user = requireRole(request, ['customer', 'supplier', 'admin']); if (!user) return json({ error: 'Authentication required.' }, 401); const body = await parseBody(request); const missing = required(body, ['productRequired', 'quantity', 'shippingDestination']); if (missing.length) return json({ error: `Missing fields: ${missing.join(', ')}` }, 422); return json({ data: createRfq({ buyerId: user.sub, productRequired: body.productRequired.trim(), quantity: Number(body.quantity), targetPrice: Number(body.targetPrice || 0), shippingDestination: body.shippingDestination.trim(), requirements: String(body.requirements || '') }) }, 201); }
+  if (method === 'POST' && path === '/api/suppliers/apply') { const user = requireRole(request, ['supplier', 'admin']); if (!user) return json({ error: 'Supplier authentication required.' }, 401); const body = await parseBody(request); const missing = required(body, ['businessName', 'country', 'businessType', 'description']); if (missing.length) return json({ error: `Missing fields: ${missing.join(', ')}` }, 422); return json({ data: createSupplier({ ownerId: user.sub, businessName: body.businessName.trim(), country: body.country.trim(), businessType: body.businessType.trim(), description: body.description.trim(), categories: Array.isArray(body.categories) ? body.categories : [] }) }, 201); }
+  return json({ error: 'Route not found.' }, 404);
+}
+  const server = http.createServer(async (request, response) => {
+  try {
+    send(response, await route(request));
+  } catch (error) {
+    console.error(error);
+    send(response, {
+      status: 500,
+      body: { error: 'Internal server error.' }
+    });
+  }
+});
+
+server.listen(port, () => {
+  console.log(`LEXORA API listening on http://localhost:${port}`);
+});
